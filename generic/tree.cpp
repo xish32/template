@@ -52,7 +52,7 @@ void makeTree(int node) {
 }
 
 //求树上两点的距离，在有层次遍历基础上的LCA 
-int calcDistAB() {
+int calcDistAB(int a, int b) {
 	int curA = a;
 	int curB = b;
 	int dist = 0;
@@ -104,4 +104,37 @@ int calcDia() {
 	return maxDist;
 }
 
+struct Group {
+	int pos;
+	int level;
+};
+Group groups[200010];
+
+bool compareLevel(const Group &a, const Group &b) {
+	return a.level > b.level;
+}
+
+bool comparePos(const Group &a, const Group &b) {
+	return a.pos < b.pos;
+}
+
+void findSub() {
+	for (int i = 1 ; i <= n ; i++) {
+		groups[i].pos = nodes[i].pos;
+		groups[i].level = nodes[i].level;
+	}
+	
+	sort(groups + 1, groups + n + 1, compareLevel);
+	
+	for (int i = 1 ; i <= n ; i++) {
+		int realPos = groups[i].pos;
+		for (int j = 0 ; j < nodes[realPos].connects.size() ; j++) {
+			int pPos = nodes[realPos].connects[j];
+			if (pPos == nodes[realPos].parent)
+				continue;
+			
+			nodes[realPos].totalCount = nodes[realPos].totalCount + nodes[pPos].totalCount;
+		}
+	}
+}
 
